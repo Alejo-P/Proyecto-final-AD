@@ -1,0 +1,41 @@
+,Elecciones,Elecciones,Sufragio,Sufragio,Período,Electos,Electos,Electos
+,Fecha,Tipo,Tipo,Participación,Período,Presidente,Vicepresidente,Partido
+0,12-09-1830,Constituyente,Indirecto,-,1830-1834,Juan José Flores,José Joaquín de Olmedo,Conservador
+2,08-08-1835,Constituyente,Indirecto,-,1835-1839,Vicente Rocafuerte,Juan Bernardo León,Liberal
+3,31-01-1839,Ordinario,Indirecto,-,1839-1843,Juan José Flores,Francisco Aguirre Mendoza,Conservador
+5,31-03-1843,Constituyente,Indirecto,-,1843-1851,Juan José Flores,Francisco de Marcos,Conservador
+6,08-12-1845,Constituyente,Indirecto,-,1845-1849,Vicente Ramón Roca,Pablo Merino,Liberal
+11,06-09-1852,Constituyente,Indirecto,-,1852-1856,José María Urbina,Pacífico Chiriboga,Liberal
+12,??-??-1856,Ordinario,Censitario,"0,07 %",1856-1860,Francisco Robles,-,Liberal
+14,02-04-1861,Constituyente,Indirecto,-,1861-1865,Gabriel García Moreno,Mariano Cueva,Conservador
+15,??-??-1865,Ordinario,Censitario,"3,30 %",1865-1869,Jerónimo Carrión,-,Liberal Conservador
+16,??-01-1868,Extraordinario,Censitario,"3,30 %",1868-1869,Javier Espinosa,-,Liberal Conservador
+17,16-05-1869,Constituyente,Indirecto,-,Interino,Gabriel García Moreno,Manuel de Ascázubi,Conservador
+23,15-10-1883,Constituyente,Indirecto,-,Interino,José María Plácido Caamaño,Rafael Pérez Pareja,PCE
+24,10-02-1884,Constituyente,Indirecto,-,1884-1888,José María Plácido Caamaño,Agustín Guerrero Lizarzaburu,PCE
+25,08-03-1888,Ordinario,Censitario,"3,00 %",1888-1892,Antonio Flores Jijón,-,PPE
+26,13-01-1892,Ordinario,Censitario,"6,00 %",1892-1896,Luis Cordero Crespo,-,PPE
+28,17-01-1897,Constituyente,Indirecto,-,1897-1901,Eloy Alfaro Delgado,Manuel Benigno Cueva,PLE
+29,??-??-1901,Ordinario,Censitario,"7,00 %",1901-1905,Leónidas Plaza,-,PLE
+30,??-??-1905,Ordinario,Censitario,"9,00 %",1905-1909,Lizardo García,-,PLE
+48,11-08-1946,Constituyente,Indirecto,-,1946-1948,José María Velasco Ibarra,Mariano Suárez Veintimilla,Independiente
+49,06-06-1948,Ordinario,Directo,"61,8 %",1948-1952,Galo Plaza,Manuel Sotomayor y Luna,Independiente
+50,01-06-1952,Ordinario,Directo,"65,5 %",1952-1956,José María Velasco Ibarra,Alfredo Chiriboga,FNV
+51,03-06-1956,Ordinario,Directo,"73,4 %",1956-1960,Camilo Ponce,Francisco Illingworth,MSC
+52,05-06-1960,Ordinario,Directo,"76,0 %",1960-1964,José María Velasco Ibarra,Carlos Julio Arosemena Monroy,FNV
+53,16-11-1966,Constituyente,Indirecto,-,Interino,Otto Arosemena,-,CID
+54,02-06-1968,Ordinario,Directo,"77,5 %",1968-1972,José María Velasco Ibarra,Jorge Zavala Baquerizo,FNV
+55,29-04-1979,Ordinario,Directo,"80,5 %",1979-1984,Jaime Roldós,Osvaldo Hurtado,CFP
+56,06-05-1984,Ordinario,Directo,"78,1 %",1984-1988,León Febres-Cordero,Blasco Peñaherrera,PSC
+57,08-05-1988,Ordinario,Directo,"77,7 %",1988-1992,Rodrigo Borja,Luis Parodi Valverde,ID
+58,05-07-1992,Ordinario,Directo,"70,10 %",1992-1996,Sixto Durán-Ballén,Alberto Dahik,PUR
+59,07-07-1996,Ordinario,Directo,"70,99 %",1996-2000,Abdalá Bucaram,Rosalía Arteaga,PRE
+60,11-02-1997,Extraordinario,Indirecto,-,Interino,Fabián Alarcón,-,FRA
+61,12-07-1998,Ordinario,Directo,"69,43 %",1998-2003,Jamil Mahuad,Gustavo Noboa,DP
+62,24-11-2002,Ordinario,Directo,"71,21 %",2003-2007,Lucio Gutiérrez,Alfredo Palacio,PSP
+63,26-11-2006,Ordinario,Directo,"89,20 %",2007-2011,Rafael Correa,Lenín Moreno,PAIS
+64,26-04-2009,Ordinario,Directo,"75,30 %",2009-2013,Rafael Correa,Lenín Moreno,PAIS
+65,17-02-2013,Ordinario,Directo,"81,09 %",2013-2017,Rafael Correa,Jorge Glas,PAIS
+66,02-04-2017,Ordinario,Directo,"82,91 %",2017-2021,Lenín Moreno,Jorge Glas,PAIS
+67,11-04-2021,Ordinario,Directo,"82,62 %",2021-2025,Guillermo Lasso,Alfredo Borrero,CREO
+68,15-10-2023,Extraordinario,Directo,"82,33 %",2023-2025,Daniel Noboa,Verónica Abad,ADN
