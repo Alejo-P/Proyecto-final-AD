@@ -1,4 +1,5 @@
 import mysql.connector, random, string
+import pandas as pd
 from pymongo import MongoClient, errors
 # Conexion a una base de datos MySQL
 class ConexionMySQL:
@@ -31,21 +32,26 @@ class ConexionMySQL:
             self._resultado=False
         return self._resultado
     
-    def Consulta(self, SQL_query):
-        """_Consulta SQL_
+    def Consulta(self, SQL_query, params=None):
+        """
+        Consulta SQL
 
         Args:
-            SQL_query (_str_): _Consulta que se desea realizar a la base de datos_
+            SQL_query (str): Consulta que se desea realizar a la base de datos
+            params (tuple): Parámetros para la consulta SQL (opcional)
 
         Raises:
-            ValueError: _Si la sentencia ingresada no pertenece a una sentencia de consulta "SELECT"_
+            ValueError: Si la sentencia ingresada no pertenece a una sentencia de consulta "SELECT"
 
         Returns:
-            str: _ID de la consulta_
+            str: ID de la consulta
         """
         self._find=False
-        if str(SQL_query).startswith("SELECT") or str(SQL_query).startswith("SHOW") or str(SQL_query).startswith("DESCRIBE"):
-            self._cursor.execute(SQL_query)
+        if str(SQL_query).startswith(("SELECT", "SHOW", "DESCRIBE")):
+            if params:
+                self._cursor.execute(SQL_query, params)
+            else:
+                self._cursor.execute(SQL_query)
             self._info=self._cursor.fetchall()
             for consulta in self._consultas:
                 if self._info == consulta["Consulta"]:
@@ -58,34 +64,93 @@ class ConexionMySQL:
             return self._ID_query
                 
         else:
-            raise ValueError("La sentencia {} no es una sentencia de consulta valida".format(SQL_query))
+            raise ValueError(f"La sentencia '{SQL_query}' no es una sentencia de consulta valida")
     
-    def Modificar(self, SQL_query):
-        """_Modificacion de registros en la base de datos_
+    def Modificar(self, SQL_query, params=None):
+        """
+        Modificacion de registros en la base de datos
 
         Args:
-            SQL_query (_str_): _Sentencia de modificacion de registros_
+            SQL_query (str): Sentencia de modificacion de registros
+            params (tuple o list): Parámetros para la consulta SQL (opcional). Puede ser una única tupla o una lista de tuplas.
 
         Raises:
-            ValueError: _Si la sentencia ingresada no pertenece a una sentencia
-            \n\t\t\tDML: "INSERT", "UPDATE", "DELETE"
-            \n\t\t\tDDL: "ALTER", "DROP", "CREATE"_
+            ValueError: Si la sentencia ingresada no pertenece a una sentencia DML o DDL válida
+            ExcepcionIntegridad: Si el registro a insertar ya existe en la base de datos
 
         Returns:
-            int: _Numero de filas afectadas por la consulta_
+            int: Numero de filas afectadas por la consulta
         """
         self._find=False
         self._sentenciasSQL=["INSERT", "UPDATE", "DELETE", "ALTER", "DROP", "CREATE"]
         try:
             for sentencia in self._sentenciasSQL:
                 if str(SQL_query).startswith(sentencia):
-                    self._ejecuion=self._cursor.execute(SQL_query)
+                    if params:
+                        if isinstance(params, tuple):  # Si params es una tupla
+                            self._ejecuion = self._cursor.execute(SQL_query, params)
+                        elif isinstance(params, list):  # Si params es una lista de tuplas
+                            self._ejecuion = self._cursor.executemany(SQL_query, params)
+                        else:
+                            raise ValueError("Los parámetros deben ser una única tupla o una lista de tuplas")
+                    else:
+                        self._ejecuion = self._cursor.execute(SQL_query)
                     self._conexion.commit()
                     return self._ejecuion
             if not self._find:
-                raise ValueError("La sentencia {} no es una sentencia de consulta valida".format(SQL_query))
+                raise ValueError(f"La sentencia '{SQL_query}' no es una sentencia de consulta valida")
+        except mysql.connector.IntegrityError:
+            raise ExcepcionIntegridad("Clave duplicada en el registro de la base de datos")
         except mysql.connector.Error as e:
             print("Error:", e)
+
+    
+    # Exclusivos para los DataFrames
+    #---------------------------------------------------------------------------------------#
+    def Crear_tabla(self, nombre_tabla, dataframe):
+        """Crear una nueva tabla en la base de datos MySQL basada en un DataFrame de Pandas
+
+        Args:
+            nombre_tabla (str): Nombre de la tabla que se creará
+            dataframe (pd.DataFrame): DataFrame de Pandas que define la estructura de la tabla
+
+        Raises:
+            ValueError: Si el DataFrame está vacío o no contiene columnas
+        """
+        if len(dataframe) == 0 or len(dataframe.columns) == 0:
+            raise ValueError("El DataFrame está vacío o no contiene columnas")
+
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {nombre_tabla} ("
+        for column_name, dtype in zip(dataframe.columns, dataframe.dtypes):
+            if "int" in str(dtype):
+                create_table_query += f"{column_name} INT,"
+            elif "float" in str(dtype):
+                create_table_query += f"{column_name} FLOAT,"
+            else:
+                create_table_query += f"{column_name} VARCHAR(255),"
+        create_table_query = create_table_query[:-1] + ");"
+
+        self.Modificar(create_table_query)
+    
+    def Insertar_desde_dataframe(self, nombre_tabla, dataframe:pd.DataFrame):
+        """Insertar datos desde un DataFrame de Pandas en una tabla de la base de datos MySQL
+
+        Args:
+            nombre_tabla (str): Nombre de la tabla en la que se insertarán los datos
+            dataframe (pd.DataFrame): DataFrame de Pandas que contiene los datos a insertar
+        """
+        if len(dataframe) == 0:
+            print("El DataFrame está vacío, no hay datos para insertar.")
+            return
+
+        columns = ", ".join(dataframe.columns)
+        placeholders = ", ".join(["%s"] * len(dataframe.columns))
+        insert_query = f"INSERT INTO {nombre_tabla} ({columns}) VALUES ({placeholders});"
+
+        values = [tuple(row) for row in dataframe.values]
+        self.Modificar(insert_query, values)
+    
+    #---------------------------------------------------------------------------------------#
     
     def Obtener_valores(self, ID_Consulta):
         """_Obtener datos de una consulta previa_
@@ -179,4 +244,8 @@ class ConexionMongoDB:
                 self.client.close()
         except Exception as e:
             print("Error al cerrar conexión:", e)
+
+class ExcepcionIntegridad(Exception):
+    def __init__(self, *args: object):
+        super().__init__(*args)
             
