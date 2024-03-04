@@ -88,15 +88,18 @@ class ConexionMySQL:
                 if str(SQL_query).startswith(sentencia):
                     if params:
                         if isinstance(params, tuple):  # Si params es una tupla
-                            self._ejecuion = self._cursor.execute(SQL_query, params)
+                            self._cursor.execute(SQL_query, params)
+                            self._ejecucion = self._cursor.rowcount
                         elif isinstance(params, list):  # Si params es una lista de tuplas
-                            self._ejecuion = self._cursor.executemany(SQL_query, params)
+                            self._cursor.executemany(SQL_query, params)
+                            self._ejecucion = self._cursor.rowcount
                         else:
                             raise ValueError("Los parámetros deben ser una única tupla o una lista de tuplas")
                     else:
-                        self._ejecuion = self._cursor.execute(SQL_query)
+                        self._cursor.execute(SQL_query)
+                        self._ejecucion = self._cursor.rowcount
                     self._conexion.commit()
-                    return self._ejecuion
+                    return self._ejecucion
             if not self._find:
                 raise ValueError(f"La sentencia '{SQL_query}' no es una sentencia de consulta valida")
         except mysql.connector.IntegrityError:
@@ -116,21 +119,26 @@ class ConexionMySQL:
 
         Raises:
             ValueError: Si el DataFrame está vacío o no contiene columnas
+        
+        Returns:
+            int: 0 si la tabla se creó correctamente, -1 si ocurrió un error al intentar crear la tabla
         """
         if len(dataframe) == 0 or len(dataframe.columns) == 0:
             raise ValueError("El DataFrame está vacío o no contiene columnas")
+        try:
 
-        create_table_query = f"CREATE TABLE IF NOT EXISTS {nombre_tabla} ("
-        for column_name, dtype in zip(dataframe.columns, dataframe.dtypes):
-            if "int" in str(dtype):
-                create_table_query += f"{column_name} INT,"
-            elif "float" in str(dtype):
-                create_table_query += f"{column_name} FLOAT,"
-            else:
-                create_table_query += f"{column_name} VARCHAR(255),"
-        create_table_query = create_table_query[:-1] + ");"
-
-        self.Modificar(create_table_query)
+            Consulta = f"CREATE TABLE IF NOT EXISTS {nombre_tabla} ("
+            for nombreColumna, dtype in zip(dataframe.columns, dataframe.dtypes):
+                if "int" in str(dtype):
+                    Consulta += f"{nombreColumna} INT,"
+                elif "float" in str(dtype):
+                    Consulta += f"{nombreColumna} FLOAT,"
+                else:
+                    Consulta += f"{nombreColumna} VARCHAR(255),"
+            Consulta = Consulta[:-1] + ");"
+            return self.Modificar(Consulta)
+        except Exception:
+            return -1
     
     def Insertar_desde_dataframe(self, nombre_tabla, dataframe:pd.DataFrame):
         """Insertar datos desde un DataFrame de Pandas en una tabla de la base de datos MySQL
@@ -138,17 +146,22 @@ class ConexionMySQL:
         Args:
             nombre_tabla (str): Nombre de la tabla en la que se insertarán los datos
             dataframe (pd.DataFrame): DataFrame de Pandas que contiene los datos a insertar
+        
+        Returns:
+            int: Cantidad de filas insertadas correctamente
         """
         if len(dataframe) == 0:
             print("El DataFrame está vacío, no hay datos para insertar.")
-            return
+            return -1
+        try:
+            columnas = ", ".join(dataframe.columns)
+            etiqueta = ", ".join(["%s"] * len(dataframe.columns))
+            Insercion = f"INSERT INTO {nombre_tabla} ({columnas}) VALUES ({etiqueta});"
 
-        columns = ", ".join(dataframe.columns)
-        placeholders = ", ".join(["%s"] * len(dataframe.columns))
-        insert_query = f"INSERT INTO {nombre_tabla} ({columns}) VALUES ({placeholders});"
-
-        values = [tuple(row) for row in dataframe.values]
-        self.Modificar(insert_query, values)
+            registros = [tuple(row) for row in dataframe.values]
+            return self.Modificar(Insercion, registros)
+        except Exception:
+            return -1
     
     #---------------------------------------------------------------------------------------#
     
