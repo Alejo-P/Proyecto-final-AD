@@ -1,6 +1,5 @@
 import mysql.connector, random, string
 import pandas as pd
-from pymongo import MongoClient, errors
 # Conexion a una base de datos MySQL
 class ConexionMySQL:
     def __init__(self):
@@ -199,66 +198,3 @@ class ConexionMySQL:
         except mysql.connector.Error as em:
             print("Error:", em)
 
-# Conexion a una base de datos MongoDB
-class ConexionMongoDB:
-    def __init__(self):
-        self.client = None
-        self.db = None
-        self.collection = None
-    
-    def conectar(self, host, port, db_name, collection_name):
-        try:
-            self.client = MongoClient(host, port)
-            self.db = self.client[db_name]
-            self.collection = self.db[collection_name]
-            return True
-        except Exception as e:
-            print("Error al conectar a MongoDB:", e)
-            return False
-    
-    def insertar(self, documento):
-        try:
-            if self.collection!=None:
-                result = self.collection.insert_one(documento)
-                return result.inserted_id
-        except Exception as e:
-            print("Error al insertar documento:", e)
-            return None
-    
-    def buscar(self, filtro):
-        try:
-            if self.collection!=None:
-                return list(self.collection.find(filtro))
-        except Exception as e:
-            print("Error al buscar documentos:", e)
-            return None
-    
-    def actualizar(self, filtro, nuevos_valores):
-        try:
-            if self.collection!=None:
-                result = self.collection.update_many(filtro, {"$set": nuevos_valores})
-                return result.modified_count
-        except Exception as e:
-            print("Error al actualizar documentos:", e)
-            return 0
-    
-    def borrar(self, filtro):
-        try:
-            if self.collection!=None:
-                result = self.collection.delete_many(filtro)
-                return result.deleted_count
-        except Exception as e:
-            print("Error al borrar documentos:", e)
-            return 0
-    
-    def desconectar(self):
-        try:
-            if self.client is not None:
-                self.client.close()
-        except Exception as e:
-            print("Error al cerrar conexión:", e)
-
-class ExcepcionIntegridad(Exception):
-    def __init__(self, *args: object):
-        super().__init__(*args)
-            
