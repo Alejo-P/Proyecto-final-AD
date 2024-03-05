@@ -154,7 +154,7 @@ class ConexionMySQL:
             print("El DataFrame está vacío, no hay datos para insertar.")
             return -1
         try:
-            columnas = ", ".join(dataframe.columns)
+            columnas = ", ".join(str(dataframe.columns))
             etiqueta = ", ".join(["%s"] * len(dataframe.columns))
             Insercion = f"INSERT INTO {nombre_tabla} ({columnas}) VALUES ({etiqueta});"
 
